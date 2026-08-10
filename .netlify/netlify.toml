@@ -1,0 +1,26 @@
+plugins = []
+headers = []
+redirects = []
+
+[functions]
+
+[functions."*"]
+
+[build]
+publish = "C:\\Users\\USER\\Downloads\\Ai agent Automation\\model portfolio website"
+publishOrigin = "config"
+base = "C:\\Users\\USER\\Downloads\\Ai agent Automation\\model portfolio website"
+
+[build.environment]
+
+[build.processing]
+
+[build.processing.css]
+
+[build.processing.html]
+
+[build.processing.images]
+
+[build.processing.js]
+
+[build.services]
