@@ -114,6 +114,10 @@ function initLightboxEngine() {
   const overlay = document.getElementById('lightboxOverlay');
   const lightboxImg = document.getElementById('lightboxImg');
   const closeBtn = document.getElementById('lightboxClose');
+  const prevBtn = document.getElementById('lightboxPrev');
+  const nextBtn = document.getElementById('lightboxNext');
+  const currentIdxEl = document.getElementById('lightboxCurrentIdx');
+  const totalIdxEl = document.getElementById('lightboxTotalIdx');
   const viewPhotoPill = document.getElementById('viewPhotoPill');
   const coverflowCards = document.querySelectorAll('.coverflow-card');
   if (!overlay || !lightboxImg) return;
@@ -126,6 +130,13 @@ function initLightboxEngine() {
   let isLightboxOpen = false;
   let isZoomedIn = false;
   let currentZoom = 1.0;
+  let galleryImgs = [];
+  let currentImgIndex = 0;
+
+  function refreshGalleryImages() {
+    galleryImgs = Array.from(document.querySelectorAll('.coverflow-card img, .floating-image-card img, .mobile-hero-img'));
+  }
+  refreshGalleryImages();
 
   // Desktop Hover "View Photo" Indicator Pill Tracking
   if (viewPhotoPill && coverflowCards.length > 0) {
@@ -153,11 +164,22 @@ function initLightboxEngine() {
     }
   }
 
+  function updateCounter() {
+    if (currentIdxEl && totalIdxEl && galleryImgs.length > 0) {
+      currentIdxEl.textContent = currentImgIndex + 1;
+      totalIdxEl.textContent = galleryImgs.length;
+    }
+  }
+
   function openLightbox(sourceImg) {
     if (isLightboxOpen || !sourceImg) return;
-    
+    refreshGalleryImages();
+
     const imgSrc = sourceImg.src || sourceImg.getAttribute('src');
     if (!imgSrc) return;
+
+    const foundIdx = galleryImgs.indexOf(sourceImg);
+    currentImgIndex = foundIdx !== -1 ? foundIdx : 0;
 
     isLightboxOpen = true;
     isZoomedIn = false;
@@ -166,25 +188,22 @@ function initLightboxEngine() {
 
     if (viewPhotoPill) viewPhotoPill.classList.remove('active');
 
-    // Set src & alt
     lightboxImg.src = imgSrc;
     lightboxImg.alt = sourceImg.alt || 'Enlarged Portfolio View';
+    updateCounter();
 
-    // Lock body scrolling & show overlay
     document.body.classList.add('lightbox-active');
     overlay.classList.add('active');
 
-    // Perform Smooth GSAP Scale & Fade In
     if (typeof gsap !== 'undefined') {
       gsap.killTweensOf(lightboxImg);
       gsap.fromTo(lightboxImg, 
-        { scale: 0.7, opacity: 0, y: 30 },
-        { scale: 1.0, opacity: 1, y: 0, duration: 0.45, ease: 'power3.out' }
+        { scale: 0.75, opacity: 0, y: 25 },
+        { scale: 1.0, opacity: 1, y: 0, duration: 0.4, ease: 'power3.out' }
       );
     }
   }
 
-  // Expose window.openLightbox globally
   window.openLightbox = openLightbox;
 
   function closeLightbox() {
@@ -196,16 +215,16 @@ function initLightboxEngine() {
     if (typeof gsap !== 'undefined') {
       gsap.killTweensOf(lightboxImg);
       gsap.to(lightboxImg, {
-        scale: 0.7,
+        scale: 0.75,
         opacity: 0,
         y: 20,
-        duration: 0.35,
+        duration: 0.32,
         ease: 'power3.in',
         onComplete: () => {
           overlay.classList.remove('active');
           document.body.classList.remove('lightbox-active');
           activeSourceImg = null;
-          gsap.set(lightboxImg, { scale: 1.0, y: 0, opacity: 1 });
+          gsap.set(lightboxImg, { scale: 1.0, x: 0, y: 0, opacity: 1 });
         }
       });
     } else {
@@ -214,6 +233,83 @@ function initLightboxEngine() {
       activeSourceImg = null;
     }
   }
+
+  function navigateLightbox(direction) {
+    if (!isLightboxOpen || galleryImgs.length === 0) return;
+    isZoomedIn = false;
+    currentZoom = 1.0;
+
+    const nextIndex = (currentImgIndex + direction + galleryImgs.length) % galleryImgs.length;
+    const targetImg = galleryImgs[nextIndex];
+    if (!targetImg) return;
+
+    currentImgIndex = nextIndex;
+    const imgSrc = targetImg.src || targetImg.getAttribute('src');
+
+    if (typeof gsap !== 'undefined') {
+      gsap.killTweensOf(lightboxImg);
+      gsap.to(lightboxImg, {
+        x: -direction * 45,
+        opacity: 0,
+        scale: 0.96,
+        duration: 0.18,
+        ease: 'power2.in',
+        onComplete: () => {
+          lightboxImg.src = imgSrc;
+          lightboxImg.alt = targetImg.alt || 'Enlarged Portfolio View';
+          updateCounter();
+          gsap.fromTo(lightboxImg,
+            { x: direction * 45, opacity: 0, scale: 0.96 },
+            { x: 0, opacity: 1, scale: 1.0, duration: 0.32, ease: 'power3.out' }
+          );
+        }
+      });
+    } else {
+      lightboxImg.src = imgSrc;
+      lightboxImg.alt = targetImg.alt || 'Enlarged Portfolio View';
+      updateCounter();
+    }
+  }
+
+  if (prevBtn) {
+    prevBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      navigateLightbox(-1);
+    });
+  }
+
+  if (nextBtn) {
+    nextBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      navigateLightbox(1);
+    });
+  }
+
+  // Touch Swipe Gesture Support inside Lightbox
+  let touchStartX = 0;
+  let touchStartY = 0;
+  const stage = document.getElementById('lightboxStage') || overlay;
+
+  stage.addEventListener('touchstart', (e) => {
+    if (!isLightboxOpen || currentZoom > 1.05) return;
+    const touch = e.touches[0];
+    touchStartX = touch.clientX;
+    touchStartY = touch.clientY;
+  }, { passive: true });
+
+  stage.addEventListener('touchend', (e) => {
+    if (!isLightboxOpen || currentZoom > 1.05) return;
+    const touch = e.changedTouches[0];
+    const deltaX = touch.clientX - touchStartX;
+    const deltaY = touch.clientY - touchStartY;
+
+    if (Math.abs(deltaX) > 40 && Math.abs(deltaX) > Math.abs(deltaY)) {
+      if (deltaX < 0) navigateLightbox(1); // Swipe left -> Next photo
+      else navigateLightbox(-1); // Swipe right -> Previous photo
+    } else if (deltaY > 70 && Math.abs(deltaY) > Math.abs(deltaX)) {
+      closeLightbox(); // Swipe down -> Close
+    }
+  }, { passive: true });
 
   // Desktop Mouse Wheel Zoom Mechanics (1.0x up to 3.0x)
   overlay.addEventListener('wheel', (e) => {
@@ -254,15 +350,20 @@ function initLightboxEngine() {
   }
 
   overlay.addEventListener('click', (e) => {
-    if (e.target === overlay || e.target === document.getElementById('lightboxStage') || (e.target.classList && e.target.classList.contains('lightbox-stage'))) {
+    if (e.target === overlay || e.target === stage || (e.target.classList && e.target.classList.contains('lightbox-stage'))) {
       closeLightbox();
     }
   });
 
-  // ESC key to close
+  // ESC & Arrow Keys Navigation
   window.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && isLightboxOpen) {
+    if (!isLightboxOpen) return;
+    if (e.key === 'Escape' || e.key === 'ArrowDown') {
       closeLightbox();
+    } else if (e.key === 'ArrowLeft') {
+      navigateLightbox(-1);
+    } else if (e.key === 'ArrowRight') {
+      navigateLightbox(1);
     }
   });
 }
@@ -790,12 +891,15 @@ function init3DCoverflowGallery() {
     targetPos += diff;
   }
 
+  let isDraggingCoverflow = false;
+
   // 60FPS Ultra-Smooth Render Ticker with Infinite Wrap Math
   function renderCoverflow() {
     const cardSpacing = getSpacing();
 
-    // Smooth lerp interpolation towards target position
-    virtualPos += (targetPos - virtualPos) * 0.12;
+    // High lerp factor (0.35) during drag for 1:1 finger tracking, returns to 0.14 for silky snapping inertia
+    const lerpFactor = isDraggingCoverflow ? 0.35 : 0.14;
+    virtualPos += (targetPos - virtualPos) * lerpFactor;
 
     cards.forEach((card, i) => {
       // Calculate infinite circular distance `diff`
@@ -819,7 +923,7 @@ function init3DCoverflowGallery() {
       } else {
         // Inactive Side Cards
         const sideDir = diff > 0 ? 1 : -1;
-        const rotateYVal = sideDir * -34 * Math.min(1.2, absDiff);
+        const rotateYVal = sideDir * -32 * Math.min(1.2, absDiff);
         const scaleVal = Math.max(0.68, 1 - absDiff * 0.14);
         const brightnessVal = Math.max(0.3, 1 - absDiff * 0.35);
         const opacityVal = absDiff > 3.2 ? 0 : Math.max(0.35, 1 - absDiff * 0.22);
@@ -853,51 +957,53 @@ function init3DCoverflowGallery() {
   // Register GSAP render ticker
   gsap.ticker.add(renderCoverflow);
 
-  // Click on any card in the carousel to center it AND open Lightbox
-  cards.forEach((card, idx) => {
-    card.addEventListener('click', (e) => {
-      e.stopPropagation();
-      snapToCardIndex(idx);
-      resetAutoPlay();
-      const cardImg = card.querySelector('img');
-      if (cardImg && typeof window.openLightbox === 'function') {
-        window.openLightbox(cardImg);
-      }
-    });
-  });
-
   // Ultra-Smooth GSAP Draggable Interaction
   if (typeof Draggable !== 'undefined') {
     let startX = 0;
     let startTargetPos = 0;
+    let dragMoveDistance = 0;
 
     Draggable.create(track, {
       type: 'x',
       trigger: wrapper,
       inertia: true,
       allowNativeTouchScrolling: false,
-      edgeResistance: 0.65,
-      throwResistance: 800,
-      dragResistance: 0.05,
+      edgeResistance: 0.5,
+      dragResistance: 0.0,
+      minimumMovement: 3,
       onDragStart: function() {
+        isDraggingCoverflow = true;
         startX = this.x;
         startTargetPos = targetPos;
+        dragMoveDistance = 0;
         stopAutoPlay();
       },
       onDrag: function() {
         const deltaX = this.x - startX;
+        dragMoveDistance = Math.abs(deltaX);
         const cardSpacing = getSpacing();
         targetPos = startTargetPos - (deltaX / cardSpacing);
       },
       onDragEnd: function() {
+        isDraggingCoverflow = false;
         const deltaX = this.x - startX;
         const cardSpacing = getSpacing();
-        const stepShift = Math.round(-deltaX / cardSpacing);
-        targetPos = startTargetPos + stepShift;
+        const velocity = this.velocityX || 0;
+
+        let stepShift = -deltaX / cardSpacing;
+
+        // Velocity & Flick momentum for high-speed swiping
+        if (Math.abs(velocity) > 200) {
+          const momentum = Math.sign(-velocity) * Math.min(3, Math.max(1, Math.round(Math.abs(velocity) / 400)));
+          stepShift = stepShift > 0 ? Math.max(stepShift, momentum) : Math.min(stepShift, momentum);
+        }
+
+        targetPos = startTargetPos + Math.round(stepShift);
         gsap.set(track, { x: 0 });
         resetAutoPlay();
       },
       onClick: function(e) {
+        if (dragMoveDistance > 8) return; // Ignore click if user was swiping
         const clickedCard = e.target.closest('.coverflow-card');
         if (clickedCard) {
           const cardIdx = cards.indexOf(clickedCard);
