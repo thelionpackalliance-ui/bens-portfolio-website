@@ -577,7 +577,7 @@ html.lenis {
   display: block;
   user-select: none;
   -webkit-user-drag: none;
-  pointer-events: none;
+  pointer-events: auto;
 }
 
 /* Coverflow Navigation Dots */

@@ -175,21 +175,26 @@ function initLightboxEngine() {
     if (isLightboxOpen || !sourceImg) return;
     refreshGalleryImages();
 
-    const imgSrc = sourceImg.src || sourceImg.getAttribute('src');
+    let imgTarget = sourceImg;
+    if (sourceImg.tagName !== 'IMG') {
+      imgTarget = sourceImg.querySelector('img') || sourceImg;
+    }
+
+    const imgSrc = imgTarget.src || imgTarget.getAttribute('src');
     if (!imgSrc) return;
 
-    const foundIdx = galleryImgs.indexOf(sourceImg);
+    const foundIdx = galleryImgs.indexOf(imgTarget);
     currentImgIndex = foundIdx !== -1 ? foundIdx : 0;
 
     isLightboxOpen = true;
     isZoomedIn = false;
     currentZoom = 1.0;
-    activeSourceImg = sourceImg;
+    activeSourceImg = imgTarget;
 
     if (viewPhotoPill) viewPhotoPill.classList.remove('active');
 
     lightboxImg.src = imgSrc;
-    lightboxImg.alt = sourceImg.alt || 'Enlarged Portfolio View';
+    lightboxImg.alt = imgTarget.alt || 'Enlarged Portfolio View';
     updateCounter();
 
     document.body.classList.add('lightbox-active');
@@ -332,8 +337,8 @@ function initLightboxEngine() {
     }
   });
 
-  // Attach click & tap events to all gallery images across desktop and mobile
-  const zoomableImgs = document.querySelectorAll('.floating-image-card img, .coverflow-card img, .accordion-img, .mobile-hero-img');
+  // Attach click & tap events to all gallery images & cards across desktop and mobile
+  const zoomableImgs = document.querySelectorAll('.floating-image-card, .floating-image-card img, .coverflow-card, .coverflow-card img, .accordion-img, .mobile-hero-img');
   zoomableImgs.forEach(img => {
     img.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -957,6 +962,22 @@ function init3DCoverflowGallery() {
   // Register GSAP render ticker
   gsap.ticker.add(renderCoverflow);
 
+  let wasDragging = false;
+
+  // Direct Click & Tap event listeners on each Coverflow card
+  cards.forEach((card, idx) => {
+    card.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (wasDragging) return; // ignore if user was dragging
+      snapToCardIndex(idx);
+      resetAutoPlay();
+      const cardImg = card.querySelector('img') || card;
+      if (typeof window.openLightbox === 'function') {
+        window.openLightbox(cardImg);
+      }
+    });
+  });
+
   // Ultra-Smooth GSAP Draggable Interaction
   if (typeof Draggable !== 'undefined') {
     let startX = 0;
@@ -966,6 +987,7 @@ function init3DCoverflowGallery() {
     Draggable.create(track, {
       type: 'x',
       trigger: wrapper,
+      dragClickables: true,
       inertia: true,
       allowNativeTouchScrolling: false,
       edgeResistance: 0.5,
@@ -973,6 +995,7 @@ function init3DCoverflowGallery() {
       minimumMovement: 3,
       onDragStart: function() {
         isDraggingCoverflow = true;
+        wasDragging = false;
         startX = this.x;
         startTargetPos = targetPos;
         dragMoveDistance = 0;
@@ -981,6 +1004,9 @@ function init3DCoverflowGallery() {
       onDrag: function() {
         const deltaX = this.x - startX;
         dragMoveDistance = Math.abs(deltaX);
+        if (dragMoveDistance > 6) {
+          wasDragging = true;
+        }
         const cardSpacing = getSpacing();
         targetPos = startTargetPos - (deltaX / cardSpacing);
       },
@@ -1001,15 +1027,19 @@ function init3DCoverflowGallery() {
         targetPos = startTargetPos + Math.round(stepShift);
         gsap.set(track, { x: 0 });
         resetAutoPlay();
+
+        setTimeout(() => {
+          wasDragging = false;
+        }, 150);
       },
       onClick: function(e) {
-        if (dragMoveDistance > 8) return; // Ignore click if user was swiping
+        if (wasDragging || dragMoveDistance > 6) return;
         const clickedCard = e.target.closest('.coverflow-card');
         if (clickedCard) {
           const cardIdx = cards.indexOf(clickedCard);
           if (cardIdx !== -1) snapToCardIndex(cardIdx);
-          const cardImg = clickedCard.querySelector('img');
-          if (cardImg && typeof window.openLightbox === 'function') {
+          const cardImg = clickedCard.querySelector('img') || clickedCard;
+          if (typeof window.openLightbox === 'function') {
             window.openLightbox(cardImg);
           }
         }
