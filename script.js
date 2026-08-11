@@ -1079,10 +1079,11 @@ function initBackgroundAudioEngine() {
   if (!bgAudio) return;
 
   const START_TIME = 17; // 0:17 start timestamp
+  const DEFAULT_VOLUME = 0.2; // Soft background level (20% volume)
   let isUserInteracted = false;
 
-  // Unmute & ensure 100% full volume
-  bgAudio.volume = 1.0;
+  // Unmute & set soft background volume
+  bgAudio.volume = DEFAULT_VOLUME;
   bgAudio.muted = false;
 
   // Set initial position to 0:17
@@ -1091,7 +1092,7 @@ function initBackgroundAudioEngine() {
   } catch(e) {}
 
   bgAudio.addEventListener('loadedmetadata', () => {
-    bgAudio.volume = 1.0;
+    bgAudio.volume = DEFAULT_VOLUME;
     bgAudio.muted = false;
     if (bgAudio.currentTime < START_TIME) {
       bgAudio.currentTime = START_TIME;
@@ -1099,6 +1100,8 @@ function initBackgroundAudioEngine() {
   });
 
   bgAudio.addEventListener('canplay', () => {
+    bgAudio.volume = DEFAULT_VOLUME;
+    bgAudio.muted = false;
     if (bgAudio.currentTime < START_TIME) {
       bgAudio.currentTime = START_TIME;
     }
@@ -1129,7 +1132,7 @@ function initBackgroundAudioEngine() {
   }
 
   function playMusic() {
-    bgAudio.volume = 1.0;
+    bgAudio.volume = DEFAULT_VOLUME;
     bgAudio.muted = false;
     if (bgAudio.currentTime < START_TIME) {
       bgAudio.currentTime = START_TIME;
