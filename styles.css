@@ -563,7 +563,7 @@ html.lenis {
   margin-top: -237.5px; /* Half of height (475/2) for exact center alignment */
   transform-style: preserve-3d;
   will-change: transform, filter, opacity;
-  transition: filter 0.4s ease, opacity 0.4s ease;
+  transition: none;
   cursor: pointer;
   box-shadow: 0 35px 70px rgba(0, 0, 0, 0.85);
   background: #111111;

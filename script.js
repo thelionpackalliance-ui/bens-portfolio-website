@@ -893,12 +893,12 @@ function init3DCoverflowGallery() {
 
   let isDraggingCoverflow = false;
 
-  // 60FPS Ultra-Smooth Render Ticker with Infinite Wrap Math
+  // 60FPS Ultra-Smooth Render Ticker with Continuous Physics (No pixel-jump thresholds)
   function renderCoverflow() {
     const cardSpacing = getSpacing();
 
-    // High lerp factor (0.35) during drag for 1:1 finger tracking, returns to 0.14 for silky snapping inertia
-    const lerpFactor = isDraggingCoverflow ? 0.35 : 0.14;
+    // Lerp physics: 0.35 during active drag for 1:1 tracking, 0.085 when coasting for smooth spring deceleration
+    const lerpFactor = isDraggingCoverflow ? 0.35 : 0.085;
     virtualPos += (targetPos - virtualPos) * lerpFactor;
 
     cards.forEach((card, i) => {
@@ -908,38 +908,38 @@ function init3DCoverflowGallery() {
       while (diff > totalCards / 2) diff -= totalCards;
 
       const absDiff = Math.abs(diff);
+      const sideDir = diff > 0 ? 1 : -1;
 
-      if (absDiff < 0.08) {
-        // Absolute Center Active Card
-        gsap.set(card, {
-          scale: 1.06,
-          rotateY: 0,
-          z: 130,
-          x: 0,
-          filter: 'brightness(1)',
-          opacity: 1,
-          zIndex: 100
-        });
-      } else {
-        // Inactive Side Cards
-        const sideDir = diff > 0 ? 1 : -1;
-        const rotateYVal = sideDir * -32 * Math.min(1.2, absDiff);
-        const scaleVal = Math.max(0.68, 1 - absDiff * 0.14);
-        const brightnessVal = Math.max(0.3, 1 - absDiff * 0.35);
-        const opacityVal = absDiff > 3.2 ? 0 : Math.max(0.35, 1 - absDiff * 0.22);
-        const xOffset = diff * cardSpacing;
-        const zVal = -absDiff * 140;
+      // 1. Continuous Scale: Smoothly peaks at 1.06 at center (absDiff = 0) with no threshold pop
+      const scaleVal = Math.max(0.68, 1.06 - absDiff * 0.15);
 
-        gsap.set(card, {
-          scale: scaleVal,
-          rotateY: rotateYVal,
-          z: zVal,
-          x: xOffset,
-          filter: `brightness(${brightnessVal})`,
-          opacity: opacityVal,
-          zIndex: Math.max(1, 80 - Math.round(absDiff * 10))
-        });
-      }
+      // 2. Continuous 3D Y-Rotation: Smoothly 0deg at center, saturates cleanly on sides
+      const rotateYVal = sideDir * -32 * (absDiff / (1 + absDiff * 0.45));
+
+      // 3. Continuous 3D Z-Depth: Peaks smoothly at +130px at center, gracefully curves backward
+      const zVal = 130 * Math.exp(-absDiff * 1.6) - absDiff * 95;
+
+      // 4. Continuous X-Offset
+      const xOffset = diff * cardSpacing;
+
+      // 5. Continuous Brightness: 1.0 at center, continuous falloff to 0.3
+      const brightnessVal = Math.max(0.3, 0.3 + 0.7 * Math.exp(-absDiff * 0.9));
+
+      // 6. Continuous Opacity
+      const opacityVal = absDiff > 3.2 ? 0 : Math.max(0, 1 - Math.pow(absDiff / 3.2, 2.2));
+
+      // 7. Layering Z-Index
+      const zIndexVal = Math.round(100 - absDiff * 20);
+
+      gsap.set(card, {
+        scale: scaleVal,
+        rotateY: rotateYVal,
+        z: zVal,
+        x: xOffset,
+        filter: `brightness(${brightnessVal})`,
+        opacity: opacityVal,
+        zIndex: zIndexVal
+      });
     });
 
     // Update Dots
