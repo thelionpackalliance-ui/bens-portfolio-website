@@ -37,6 +37,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // Initialize Background Audio Engine FIRST so music plays during the intro
+  initBackgroundAudioEngine();
+
   // Always run Cinematic Intro (handles fallback if GSAP unavailable)
   runCinematicIntro(lenis);
   initAccordionMotionEngine();
@@ -526,11 +529,19 @@ function runCinematicIntro(lenis) {
   const titleWrapper = document.querySelector('.preloader-content-wrapper') || document.querySelector('.preloader-title');
   const subTexts = document.querySelectorAll('.preloader-sub-text');
 
+  // Trigger music playback immediately while on the intro animation
+  if (typeof window.startBackgroundMusic === 'function') {
+    window.startBackgroundMusic();
+  }
+
   let hidden = false;
   function hidePreloader() {
     if (!preloader || hidden) return;
     hidden = true;
     preloader.classList.add('is-hidden');
+    if (typeof window.startBackgroundMusic === 'function') {
+      window.startBackgroundMusic();
+    }
     setTimeout(() => {
       preloader.style.display = 'none';
       initPhysicsMotionEngine(lenis);
@@ -547,6 +558,15 @@ function runCinematicIntro(lenis) {
     clearTimeout(fallbackTimer);
     hidePreloader();
     return;
+  }
+
+  if (preloader) {
+    preloader.addEventListener('click', () => {
+      if (typeof window.startBackgroundMusic === 'function') {
+        window.startBackgroundMusic();
+      }
+      hidePreloader();
+    });
   }
 
   const tl = gsap.timeline({
@@ -1047,3 +1067,127 @@ function init3DCoverflowGallery() {
     });
   }
 }
+
+/* ==========================================================================
+   Background Audio Engine (Start from 0:17 to end + Autoplay & Toggle)
+   ========================================================================== */
+function initBackgroundAudioEngine() {
+  const bgAudio = document.getElementById('bgAudio');
+  const musicToggleBtn = document.getElementById('musicToggleBtn');
+  const musicLabel = document.getElementById('musicLabel');
+
+  if (!bgAudio) return;
+
+  const START_TIME = 17; // 0:17 start timestamp
+  let isUserInteracted = false;
+
+  // Unmute & ensure 100% full volume
+  bgAudio.volume = 1.0;
+  bgAudio.muted = false;
+
+  // Set initial position to 0:17
+  try {
+    bgAudio.currentTime = START_TIME;
+  } catch(e) {}
+
+  bgAudio.addEventListener('loadedmetadata', () => {
+    bgAudio.volume = 1.0;
+    bgAudio.muted = false;
+    if (bgAudio.currentTime < START_TIME) {
+      bgAudio.currentTime = START_TIME;
+    }
+  });
+
+  bgAudio.addEventListener('canplay', () => {
+    if (bgAudio.currentTime < START_TIME) {
+      bgAudio.currentTime = START_TIME;
+    }
+  });
+
+  // Guard against scrubbing before 0:17
+  bgAudio.addEventListener('timeupdate', () => {
+    if (bgAudio.currentTime < START_TIME && !bgAudio.paused) {
+      bgAudio.currentTime = START_TIME;
+    }
+  });
+
+  // Loop back to 0:17 on track end
+  bgAudio.addEventListener('ended', () => {
+    bgAudio.currentTime = START_TIME;
+    bgAudio.play().catch(() => {});
+  });
+
+  function updateUIState(isPlaying) {
+    if (!musicToggleBtn || !musicLabel) return;
+    if (isPlaying) {
+      musicToggleBtn.classList.add('is-playing');
+      musicLabel.textContent = 'MUSIC ON';
+    } else {
+      musicToggleBtn.classList.remove('is-playing');
+      musicLabel.textContent = 'MUSIC OFF';
+    }
+  }
+
+  function playMusic() {
+    bgAudio.volume = 1.0;
+    bgAudio.muted = false;
+    if (bgAudio.currentTime < START_TIME) {
+      bgAudio.currentTime = START_TIME;
+    }
+    const playPromise = bgAudio.play();
+    if (playPromise !== undefined) {
+      playPromise.then(() => {
+        updateUIState(true);
+      }).catch((err) => {
+        console.warn('Autoplay waiting for user gesture:', err.message);
+        updateUIState(false);
+      });
+    }
+  }
+
+  function pauseMusic() {
+    bgAudio.pause();
+    updateUIState(false);
+  }
+
+  // Export global trigger for preloader enter button
+  window.startBackgroundMusic = () => {
+    isUserInteracted = true;
+    playMusic();
+  };
+
+  // Attempt initial playback immediately on load
+  playMusic();
+
+  // Screen-wide fallback gesture listener (fires on first mouse move, scroll, touch, or click)
+  const enableAudioOnGesture = () => {
+    if (isUserInteracted) return;
+    isUserInteracted = true;
+    if (bgAudio.paused) {
+      playMusic();
+    }
+    ['pointerdown', 'click', 'touchstart', 'keydown', 'scroll', 'mousemove', 'wheel'].forEach(evt => {
+      window.removeEventListener(evt, enableAudioOnGesture);
+      document.removeEventListener(evt, enableAudioOnGesture);
+    });
+  };
+
+  ['pointerdown', 'click', 'touchstart', 'keydown', 'scroll', 'mousemove', 'wheel'].forEach(evt => {
+    window.addEventListener(evt, enableAudioOnGesture, { once: true, passive: true });
+    document.addEventListener(evt, enableAudioOnGesture, { once: true, passive: true });
+  });
+
+  // Manual Floating Toggle Button Event
+  if (musicToggleBtn) {
+    musicToggleBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      isUserInteracted = true;
+      if (bgAudio.paused) {
+        playMusic();
+      } else {
+        pauseMusic();
+      }
+    });
+  }
+}
+

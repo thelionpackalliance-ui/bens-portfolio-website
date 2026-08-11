@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BENYAMIN — Ultra-Modern Modeling Portfolio</title>
-  <meta name="description" content="Official portfolio of Benyamin. High Fashion, Editorial, Runway, and Commercial Fashion Model represented by MGM Paris & Elite Milan.">
+  <meta name="description" content="Official portfolio of Benyamin. High Fashion, Editorial, Runway, and Commercial Fashion Model based in the Philippines and available worldwide.">
   
   <!-- CSS Stylesheet -->
   <link rel="stylesheet" href="styles.css">
@@ -40,8 +40,37 @@
   <!-- Desktop Hover "View Photo" Indicator Pill -->
   <div class="view-photo-pill" id="viewPhotoPill">View Photo</div>
 
+  <!-- Pure High-Fidelity Background Audio Element -->
+  <audio id="bgAudio" preload="auto" loop autoplay>
+    <source src="audio/bg-music-clean.mp3" type="audio/mpeg">
+    <source src="audio/bg-music-clean.mp3" type="audio/aac">
+  </audio>
+  <script>
+    (function() {
+      var a = document.getElementById('bgAudio');
+      if (a) {
+        try { a.currentTime = 17; } catch(e) {}
+        a.volume = 1.0;
+        a.muted = false;
+        var p = a.play();
+        if (p && p.catch) p.catch(function(){});
+      }
+    })();
+  </script>
+
   <!-- Persistent Identity Marker (Fixed top-left with mix-blend-mode: difference; NO top navigation bar) -->
   <a href="#" class="identity-marker magnetic-3d">BENYAMIN</a>
+
+  <!-- Floating Background Music Controller Widget -->
+  <button class="music-toggle-btn magnetic-3d" id="musicToggleBtn" aria-label="Toggle Background Music" title="Play / Pause Background Music">
+    <div class="music-bars" id="musicBars">
+      <span class="bar bar-1"></span>
+      <span class="bar bar-2"></span>
+      <span class="bar bar-3"></span>
+      <span class="bar bar-4"></span>
+    </div>
+    <span class="music-label" id="musicLabel">MUSIC ON</span>
+  </button>
 
   <!-- Main Website Content -->
   <div>
@@ -159,7 +188,7 @@
             </div>
             <div class="accordion-content">
               <div class="accordion-content-inner">
-                <p class="accordion-desc">Catwalk presentations for Paris & Milan Fashion Weeks, featuring structured tailoring and avant-garde menswear collections.</p>
+                <p class="accordion-desc">Catwalk presentations and designer runway shows, featuring structured tailoring, modern streetwear, and avant-garde menswear collections.</p>
               </div>
             </div>
           </div>
