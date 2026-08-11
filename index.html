@@ -41,7 +41,7 @@
   <div class="view-photo-pill" id="viewPhotoPill">View Photo</div>
 
   <!-- Pure High-Fidelity Background Audio Element -->
-  <audio id="bgAudio" preload="auto" loop autoplay>
+  <audio id="bgAudio" preload="auto" loop autoplay muted>
     <source src="audio/bg-music-clean.mp3" type="audio/mpeg">
     <source src="audio/bg-music-clean.mp3" type="audio/aac">
   </audio>
@@ -50,10 +50,22 @@
       var a = document.getElementById('bgAudio');
       if (a) {
         try { a.currentTime = 17; } catch(e) {}
-        a.volume = 1.0;
-        a.muted = false;
-        var p = a.play();
-        if (p && p.catch) p.catch(function(){});
+        a.play().catch(function(){});
+
+        function unmuteSound() {
+          a.muted = false;
+          a.volume = 1.0;
+          a.play().catch(function(){});
+          ['mousemove', 'mouseenter', 'mouseover', 'scroll', 'pointerdown', 'click', 'touchstart', 'keydown'].forEach(function(evt) {
+            window.removeEventListener(evt, unmuteSound);
+            document.removeEventListener(evt, unmuteSound);
+          });
+        }
+
+        ['mousemove', 'mouseenter', 'mouseover', 'scroll', 'pointerdown', 'click', 'touchstart', 'keydown'].forEach(function(evt) {
+          window.addEventListener(evt, unmuteSound, { once: true, passive: true });
+          document.addEventListener(evt, unmuteSound, { once: true, passive: true });
+        });
       }
     })();
   </script>
