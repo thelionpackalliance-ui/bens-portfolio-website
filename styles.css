@@ -199,14 +199,35 @@ html.lenis {
   transition: transform 0.15s ease-out;
 }
 
-/* Dynamic Hero Section */
+/* Dynamic Editorial 2-Column Hero Section */
 .hero-section {
   min-height: 100vh;
-  padding: 14rem 4rem 6rem 4rem;
+  padding: 10rem 4rem 4rem 4rem;
+  display: flex;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  background-color: var(--bg-white);
+}
+
+.hero-grid-container {
+  width: 100%;
+  max-width: 1550px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 58% 42%;
+  align-items: center;
+  gap: 2rem;
+  position: relative;
+  z-index: 2;
+}
+
+.hero-left-col {
   display: flex;
   flex-direction: column;
   justify-content: center;
   position: relative;
+  z-index: 3;
 }
 
 .hero-subhead {
@@ -215,8 +236,8 @@ html.lenis {
   letter-spacing: 3px;
   text-transform: uppercase;
   font-weight: 600;
-  margin-bottom: 3rem;
-  max-width: 420px;
+  margin-bottom: 2.5rem;
+  max-width: 440px;
 }
 
 /* Split-Line Mask Reveal Wrappers */
@@ -231,13 +252,44 @@ html.lenis {
 }
 
 .hero-headline {
-  font-size: clamp(2.8rem, 8vw, 8.5rem);
+  font-size: clamp(2.6rem, 6.2vw, 7.2rem);
   font-weight: 900;
   line-height: 0.98;
   letter-spacing: -3px;
   color: var(--text-black);
-  max-width: 1280px;
   word-break: break-word;
+}
+
+/* Right Column: Background-Less Cutout Image Container */
+.hero-right-col {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+}
+
+.hero-cutout-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 580px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* Layered 3D Editorial Overlap on Left Typography */
+  margin-left: -6rem;
+  will-change: transform, opacity;
+}
+
+.hero-cutout-img {
+  width: 100%;
+  height: auto;
+  max-height: 82vh;
+  object-fit: contain;
+  filter: drop-shadow(0 25px 50px rgba(0, 0, 0, 0.12));
+  will-change: transform, opacity;
+  transform-style: preserve-3d;
+  pointer-events: none;
 }
 
 .hover-trigger-hero {
@@ -717,6 +769,7 @@ html.lenis {
 /* Mobile Devices (< 768px) */
 @media (max-width: 768px) {
   .identity-marker { top: 1.25rem; left: 1.25rem; font-size: 0.95rem; }
+  
   .hero-section {
     position: relative;
     padding: 7.5rem 1.25rem 4rem 1.25rem;
@@ -724,6 +777,15 @@ html.lenis {
     flex-direction: column;
     align-items: flex-start;
     min-height: auto;
+  }
+
+  .hero-grid-container {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .hero-right-col {
+    display: none;
   }
 
   .hero-subhead {

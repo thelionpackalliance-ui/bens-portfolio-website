@@ -624,13 +624,82 @@ function runCinematicIntro(lenis) {
 
 function triggerHeroTextReveal() {
   const heroLineContents = document.querySelectorAll('.hero-headline .line-content');
+  const heroSubhead = document.querySelector('.hero-subhead');
+  const cutoutWrapper = document.querySelector('.hero-cutout-wrapper');
+
+  const tl = gsap.timeline();
+
+  // 1. Subhead Fade & Slide Up
+  if (heroSubhead) {
+    tl.from(heroSubhead, {
+      y: 20,
+      opacity: 0,
+      duration: 0.8,
+      ease: 'power3.out'
+    });
+  }
+
+  // 2. Headline Staggered Line-Mask Reveal
   if (heroLineContents.length > 0) {
-    gsap.from(heroLineContents, {
+    tl.from(heroLineContents, {
       y: '105%',
       opacity: 0,
       duration: 1.2,
       stagger: 0.15,
       ease: 'power4.out'
+    }, heroSubhead ? '-=0.4' : 0);
+  }
+
+  // 3. Cutout Reveal (Smooth fade in + float upward opacity: 0, y: 50 -> opacity: 1, y: 0)
+  if (cutoutWrapper) {
+    tl.fromTo(cutoutWrapper,
+      { y: 50, opacity: 0 },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 1.2,
+        ease: 'power3.out',
+        onComplete: initHeroCutoutFloatAndParallax
+      },
+      '-=0.7'
+    );
+  }
+}
+
+/* Phase 3: Cutout Image Continuous Yoyo Float & Interactive Parallax Engine */
+function initHeroCutoutFloatAndParallax() {
+  const cutoutImg = document.querySelector('.hero-cutout-img');
+  const cutoutWrapper = document.querySelector('.hero-cutout-wrapper');
+  const heroSection = document.getElementById('hero');
+
+  if (!cutoutWrapper) return;
+
+  // Continuous GSAP yoyo floating animation (moving up/down 8px over 3s)
+  gsap.to(cutoutWrapper, {
+    y: '-=10',
+    duration: 3,
+    repeat: -1,
+    yoyo: true,
+    ease: 'sine.inOut'
+  });
+
+  // Interactive Mouse Parallax Effect for 3D Editorial Depth
+  if (cutoutImg && heroSection && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    const xTo = gsap.quickTo(cutoutImg, 'x', { duration: 0.6, ease: 'power2.out' });
+    const yTo = gsap.quickTo(cutoutImg, 'y', { duration: 0.6, ease: 'power2.out' });
+
+    heroSection.addEventListener('mousemove', (e) => {
+      const { left, top, width, height } = heroSection.getBoundingClientRect();
+      const xRel = (e.clientX - left) / width - 0.5;
+      const yRel = (e.clientY - top) / height - 0.5;
+
+      xTo(xRel * 25);
+      yTo(yRel * 25);
+    });
+
+    heroSection.addEventListener('mouseleave', () => {
+      xTo(0);
+      yTo(0);
     });
   }
 }
