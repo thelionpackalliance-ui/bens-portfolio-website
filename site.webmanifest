@@ -1,0 +1,19 @@
+{
+  "name": "BENYAMIN — Ultra-Modern Modeling Portfolio",
+  "short_name": "BENYAMIN",
+  "icons": [
+    {
+      "src": "./favicon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png"
+    },
+    {
+      "src": "./apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#000000",
+  "background_color": "#ffffff",
+  "display": "standalone"
+}
