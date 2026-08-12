@@ -1,9 +1,9 @@
 /* ==========================================================================
-   BENYAMIN — High-Fashion Animated Favicon Controller
+   BENYAMIN — Ultra-High Impact Animated Favicon Engine
    ========================================================================== */
 (function() {
-  if (window.__benyaminFaviconAnimated) return;
-  window.__benyaminFaviconAnimated = true;
+  if (window.__benyaminFaviconEngineLoaded) return;
+  window.__benyaminFaviconEngineLoaded = true;
 
   const SIZE = 64;
   const canvas = document.createElement('canvas');
@@ -11,70 +11,77 @@
   canvas.height = SIZE;
   const ctx = canvas.getContext('2d');
 
-  let faviconLink = document.querySelector('link[rel="icon"][type="image/png"]') || document.querySelector('link[rel="icon"]');
-  if (!faviconLink) {
-    faviconLink = document.createElement('link');
-    faviconLink.rel = 'icon';
-    faviconLink.type = 'image/png';
-    document.head.appendChild(faviconLink);
+  // Remove static icon tags so browser strictly uses our dynamic animated icon
+  let iconTag = document.getElementById('dynamicFavicon');
+  if (!iconTag) {
+    iconTag = document.createElement('link');
+    iconTag.id = 'dynamicFavicon';
+    iconTag.rel = 'icon';
+    iconTag.type = 'image/png';
+    document.head.appendChild(iconTag);
   }
 
   let progress = 0;
   let lastTime = performance.now();
 
-  function drawAnimatedFavicon(time) {
-    const dt = (time - lastTime) / 1000;
-    lastTime = time;
-    progress += dt * 0.85;
+  function renderAnimatedFrame(timestamp) {
+    const dt = Math.min((timestamp - lastTime) / 1000, 0.1);
+    lastTime = timestamp;
+    progress += dt * 1.2;
 
     ctx.clearRect(0, 0, SIZE, SIZE);
+
+    // 1. Solid Pitch Black Canvas Background
     ctx.fillStyle = '#000000';
     ctx.fillRect(0, 0, SIZE, SIZE);
 
+    // 2. High Fashion Editorial Serif 'B' Monogram
     ctx.fillStyle = '#FFFFFF';
-    ctx.font = '700 44px Georgia, Didot, serif';
+    ctx.font = '700 42px Georgia, Didot, serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText('B', SIZE / 2, SIZE / 2 + 2);
 
-    const sweepPos = (progress % 2.5) / 2.5;
-    if (sweepPos < 1.0) {
-      const x = sweepPos * (SIZE * 2.2) - SIZE * 0.6;
-      const grad = ctx.createLinearGradient(x - 14, 0, x + 14, SIZE);
+    // 3. Bright Silver Light Sweep Flare
+    const sweepCycle = (progress % 2.0) / 2.0; // Sweeps every 2 seconds
+    if (sweepCycle < 0.85) {
+      const x = sweepCycle * (SIZE * 2.4) - SIZE * 0.7;
+      const grad = ctx.createLinearGradient(x - 12, 0, x + 12, SIZE);
       grad.addColorStop(0, 'rgba(255, 255, 255, 0)');
-      grad.addColorStop(0.5, 'rgba(255, 255, 255, 0.45)');
+      grad.addColorStop(0.5, 'rgba(255, 255, 255, 0.75)');
       grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+
       ctx.globalCompositeOperation = 'source-atop';
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, SIZE, SIZE);
       ctx.globalCompositeOperation = 'source-over';
     }
 
-    const pulse = (Math.sin(progress * Math.PI * 2) + 1) / 2;
-    const borderAlpha = 0.2 + pulse * 0.4;
+    // 4. Vibrant Pulsing Halo Ring
+    const pulse = (Math.sin(progress * Math.PI * 2.5) + 1) / 2;
+    const borderAlpha = 0.35 + pulse * 0.65;
+    const borderWidth = 2 + pulse * 2.5;
     ctx.strokeStyle = 'rgba(255, 255, 255, ' + borderAlpha.toFixed(2) + ')';
-    ctx.lineWidth = 2;
-    ctx.strokeRect(1, 1, SIZE - 2, SIZE - 2);
+    ctx.lineWidth = borderWidth;
+    ctx.strokeRect(borderWidth / 2, borderWidth / 2, SIZE - borderWidth, SIZE - borderWidth);
 
-    faviconLink.href = canvas.toDataURL('image/png');
+    // 5. Update Favicon Link
+    iconTag.href = canvas.toDataURL('image/png');
   }
 
   let lastDraw = 0;
-  const fpsInterval = 1000 / 20;
-  function loop(timestamp) {
-    requestAnimationFrame(loop);
+  const fpsInterval = 1000 / 25; // Smooth 25 fps update rate
+
+  function animationLoop(timestamp) {
+    requestAnimationFrame(animationLoop);
     const elapsed = timestamp - lastDraw;
     if (elapsed > fpsInterval) {
       lastDraw = timestamp - (elapsed % fpsInterval);
       if (!document.hidden) {
-        drawAnimatedFavicon(timestamp);
+        renderAnimatedFrame(timestamp);
       }
     }
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => loop(performance.now()));
-  } else {
-    loop(performance.now());
-  }
+  requestAnimationFrame(animationLoop);
 })();
