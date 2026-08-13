@@ -403,6 +403,9 @@ function initAccordionMotionEngine() {
     // --- 1. Close Currently Active Accordion Item ---
     if (activeItem) {
       activeItem.classList.remove('active');
+      const prevHeader = activeItem.querySelector('.accordion-header');
+      if (prevHeader) prevHeader.setAttribute('aria-expanded', 'false');
+
       const prevContent = activeItem.querySelector('.accordion-content');
       const prevDesc = activeItem.querySelector('.accordion-desc');
 
@@ -429,6 +432,9 @@ function initAccordionMotionEngine() {
     item.classList.add('active');
     activeItem = item;
     activeImgId = targetImgId;
+
+    const newHeader = item.querySelector('.accordion-header');
+    if (newHeader) newHeader.setAttribute('aria-expanded', 'true');
 
     const newContent = item.querySelector('.accordion-content');
     const newDesc = item.querySelector('.accordion-desc');
@@ -492,8 +498,9 @@ function initAccordionMotionEngine() {
     const desc = item.querySelector('.accordion-desc');
     const header = item.querySelector('.accordion-header');
 
-    // Initialize height state
+    // Initialize height & ARIA state
     if (item === activeItem) {
+      if (header) header.setAttribute('aria-expanded', 'true');
       if (typeof gsap !== 'undefined') {
         gsap.set(content, { height: 'auto' });
         if (desc) gsap.set(desc, { y: 0, opacity: 1 });
@@ -501,6 +508,7 @@ function initAccordionMotionEngine() {
         content.style.height = 'auto';
       }
     } else {
+      if (header) header.setAttribute('aria-expanded', 'false');
       if (typeof gsap !== 'undefined') {
         gsap.set(content, { height: 0 });
         if (desc) gsap.set(desc, { y: 20, opacity: 0 });
@@ -510,6 +518,14 @@ function initAccordionMotionEngine() {
     }
 
     if (!header) return;
+
+    // Keyboard support for WCAG 2.2 AA (Enter or Space key)
+    header.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        activateAccordionItem(item);
+      }
+    });
 
     if (isHoverDevice) {
       // Desktop: trigger expansion and clip-path image reveal on hover (mouseenter)
@@ -528,6 +544,16 @@ function runCinematicIntro(lenis) {
   const chars = document.querySelectorAll('.preloader-char');
   const titleWrapper = document.querySelector('.preloader-content-wrapper') || document.querySelector('.preloader-title');
   const subTexts = document.querySelectorAll('.preloader-sub-text');
+
+  // Skip intro if user has already seen preloader in current browser session
+  const introSeen = sessionStorage.getItem('benyamin_intro_seen');
+  if (introSeen && preloader) {
+    preloader.style.display = 'none';
+    initPhysicsMotionEngine(lenis);
+    triggerHeroTextReveal();
+    return;
+  }
+  sessionStorage.setItem('benyamin_intro_seen', 'true');
 
   // Trigger music playback immediately while on the intro animation
   if (typeof window.startBackgroundMusic === 'function') {

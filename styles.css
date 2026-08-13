@@ -1068,3 +1068,58 @@ body.lightbox-active {
   }
 }
 
+/* ==========================================================================
+   ACCESSIBILITY (WCAG 2.2 AA) & ACCESSIBLE FOCUS / REDUCED MOTION
+   ========================================================================== */
+
+/* Visible & Elegant Keyboard Focus Outlines */
+:focus-visible {
+  outline: 2px solid var(--text-black) !important;
+  outline-offset: 4px !important;
+}
+
+.works-section :focus-visible,
+.lightbox-overlay :focus-visible {
+  outline-color: #FFFFFF !important;
+}
+
+.identity-marker:focus-visible,
+.music-toggle-btn:focus-visible,
+.accordion-header:focus-visible,
+.coverflow-dot:focus-visible,
+.lightbox-close:focus-visible,
+.lightbox-nav:focus-visible,
+.social-list a:focus-visible,
+.footer-email-link:focus-visible,
+#backToTop:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 4px;
+}
+
+/* System Reduced Motion Preference Support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .cinematic-preloader {
+    display: none !important;
+  }
+
+  .cursor-follower,
+  .view-photo-pill {
+    display: none !important;
+  }
+
+  .marquee-content {
+    animation: none !important;
+    transform: none !important;
+  }
+}
+
+

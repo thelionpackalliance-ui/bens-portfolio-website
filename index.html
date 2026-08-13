@@ -199,14 +199,14 @@
 
       <div class="focus-accordion-container">
         <!-- Accordion List (Left Column) -->
-        <div class="accordion-list">
+        <div class="accordion-list" role="tablist">
           
           <div class="accordion-item active" data-img="img-1">
-            <div class="accordion-header">
+            <div class="accordion-header" role="tab" tabindex="0" aria-expanded="true" aria-controls="accordion-content-1" id="accordion-header-1">
               <div class="accordion-title-wrap"><span class="accordion-num">01</span>Editorial</div>
-              <i class="fa-solid fa-arrow-right accordion-arrow"></i>
+              <i class="fa-solid fa-arrow-right accordion-arrow" aria-hidden="true"></i>
             </div>
-            <div class="accordion-content">
+            <div class="accordion-content" id="accordion-content-1" role="tabpanel" aria-labelledby="accordion-header-1">
               <div class="accordion-content-inner">
                 <p class="accordion-desc">High-fashion magazine spreads, cover stories, and architectural menswear editorials capturing raw authentic expressions and unretouched lighting.</p>
               </div>
@@ -214,11 +214,11 @@
           </div>
 
           <div class="accordion-item" data-img="img-2">
-            <div class="accordion-header">
+            <div class="accordion-header" role="tab" tabindex="0" aria-expanded="false" aria-controls="accordion-content-2" id="accordion-header-2">
               <div class="accordion-title-wrap"><span class="accordion-num">02</span>Runway</div>
-              <i class="fa-solid fa-arrow-right accordion-arrow"></i>
+              <i class="fa-solid fa-arrow-right accordion-arrow" aria-hidden="true"></i>
             </div>
-            <div class="accordion-content">
+            <div class="accordion-content" id="accordion-content-2" role="tabpanel" aria-labelledby="accordion-header-2">
               <div class="accordion-content-inner">
                 <p class="accordion-desc">Catwalk presentations and designer runway shows, featuring structured tailoring, modern streetwear, and avant-garde menswear collections.</p>
               </div>
@@ -226,11 +226,11 @@
           </div>
 
           <div class="accordion-item" data-img="img-3">
-            <div class="accordion-header">
+            <div class="accordion-header" role="tab" tabindex="0" aria-expanded="false" aria-controls="accordion-content-3" id="accordion-header-3">
               <div class="accordion-title-wrap"><span class="accordion-num">03</span>Commercial</div>
-              <i class="fa-solid fa-arrow-right accordion-arrow"></i>
+              <i class="fa-solid fa-arrow-right accordion-arrow" aria-hidden="true"></i>
             </div>
-            <div class="accordion-content">
+            <div class="accordion-content" id="accordion-content-3" role="tabpanel" aria-labelledby="accordion-header-3">
               <div class="accordion-content-inner">
                 <p class="accordion-desc">Advertising campaigns for luxury fragrance, eyewear, and high-end menswear houses with natural lighting.</p>
               </div>
@@ -238,11 +238,11 @@
           </div>
 
           <div class="accordion-item" data-img="img-4">
-            <div class="accordion-header">
+            <div class="accordion-header" role="tab" tabindex="0" aria-expanded="false" aria-controls="accordion-content-4" id="accordion-header-4">
               <div class="accordion-title-wrap"><span class="accordion-num">04</span>Lookbook</div>
-              <i class="fa-solid fa-arrow-right accordion-arrow"></i>
+              <i class="fa-solid fa-arrow-right accordion-arrow" aria-hidden="true"></i>
             </div>
-            <div class="accordion-content">
+            <div class="accordion-content" id="accordion-content-4" role="tabpanel" aria-labelledby="accordion-header-4">
               <div class="accordion-content-inner">
                 <p class="accordion-desc">Full seasonal brand lookbooks capturing candid angles, versatile sitting & standing poses, and authentic editorial storytelling.</p>
               </div>
@@ -253,10 +253,10 @@
 
         <!-- Sticky Floating Preview Image Card (Right Column) -->
         <div class="floating-image-card">
-          <img src="images/work-7.jpg" alt="Editorial Preview" id="img-1" class="accordion-img active">
-          <img src="images/work-1.jpg" alt="Runway Preview" id="img-2" class="accordion-img">
-          <img src="images/work-2.jpg" alt="Commercial Preview" id="img-3" class="accordion-img">
-          <img src="images/work-8.jpg" alt="Lookbook Preview" id="img-4" class="accordion-img">
+          <img src="images/work-7.jpg" alt="Editorial Preview" id="img-1" class="accordion-img active" loading="lazy" decoding="async">
+          <img src="images/work-1.jpg" alt="Runway Preview" id="img-2" class="accordion-img" loading="lazy" decoding="async">
+          <img src="images/work-2.jpg" alt="Commercial Preview" id="img-3" class="accordion-img" loading="lazy" decoding="async">
+          <img src="images/work-8.jpg" alt="Lookbook Preview" id="img-4" class="accordion-img" loading="lazy" decoding="async">
         </div>
       </div>
     </section>
@@ -272,39 +272,39 @@
         <div class="coverflow-track" id="coverflowTrack">
           
           <div class="coverflow-card">
-            <img src="images/work-1.jpg" alt="Benyamin Streetwear Editorial">
+            <img src="images/work-1.jpg" alt="Benyamin Streetwear Editorial" loading="lazy" decoding="async">
           </div>
 
           <div class="coverflow-card">
-            <img src="images/work-2.jpg" alt="Benyamin Outdoor Headphones Campaign">
+            <img src="images/work-2.jpg" alt="Benyamin Outdoor Headphones Campaign" loading="lazy" decoding="async">
           </div>
 
           <div class="coverflow-card">
-            <img src="images/work-3.jpg" alt="Benyamin Architectural Staircase Lookbook">
+            <img src="images/work-3.jpg" alt="Benyamin Architectural Staircase Lookbook" loading="lazy" decoding="async">
           </div>
 
           <div class="coverflow-card">
-            <img src="images/work-4.jpg" alt="Benyamin Profile Portrait with Cap & AirPods Max">
+            <img src="images/work-4.jpg" alt="Benyamin Profile Portrait with Cap & AirPods Max" loading="lazy" decoding="async">
           </div>
 
           <div class="coverflow-card">
-            <img src="images/work-5.jpg" alt="Benyamin Gym Fitness Shoot">
+            <img src="images/work-5.jpg" alt="Benyamin Gym Fitness Shoot" loading="lazy" decoding="async">
           </div>
 
           <div class="coverflow-card">
-            <img src="images/work-6.jpg" alt="Benyamin Tailored White Shirt Shoot">
+            <img src="images/work-6.jpg" alt="Benyamin Tailored White Shirt Shoot" loading="lazy" decoding="async">
           </div>
 
           <div class="coverflow-card">
-            <img src="images/work-7.jpg" alt="Benyamin Close-Up Headphones Portrait">
+            <img src="images/work-7.jpg" alt="Benyamin Close-Up Headphones Portrait" loading="lazy" decoding="async">
           </div>
 
           <div class="coverflow-card">
-            <img src="images/work-8.jpg" alt="Benyamin Beanie & Headphones Shoot">
+            <img src="images/work-8.jpg" alt="Benyamin Beanie & Headphones Shoot" loading="lazy" decoding="async">
           </div>
 
           <div class="coverflow-card">
-            <img src="images/work-9.jpg" alt="Benyamin Red Hoodie Night Shoot">
+            <img src="images/work-9.jpg" alt="Benyamin Red Hoodie Night Shoot" loading="lazy" decoding="async">
           </div>
 
         </div>

@@ -70,9 +70,11 @@
   }
 
   let lastDraw = 0;
-  const fpsInterval = 1000 / 25; // Smooth 25 fps update rate
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const fpsInterval = 1000 / 15; // Efficient 15 fps update rate for browser tab icon
 
   function animationLoop(timestamp) {
+    if (prefersReducedMotion) return; // Pause completely if user prefers reduced motion
     requestAnimationFrame(animationLoop);
     const elapsed = timestamp - lastDraw;
     if (elapsed > fpsInterval) {
@@ -83,5 +85,8 @@
     }
   }
 
-  requestAnimationFrame(animationLoop);
+  if (!prefersReducedMotion) {
+    requestAnimationFrame(animationLoop);
+  }
 })();
+
