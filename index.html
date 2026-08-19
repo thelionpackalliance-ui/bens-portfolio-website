@@ -14,15 +14,23 @@
   <meta name="apple-mobile-web-app-title" content="BENYAMIN">
   <link rel="manifest" href="site.webmanifest">
   <meta name="theme-color" content="#000000">
+
+  <!-- Google Fonts: Instrument Serif, Plus Jakarta Sans, Space Mono & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,600&family=Space+Mono:wght@400;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
   
   <!-- High-Impact Animated Favicon Engine -->
   <script src="favicon-animator.js"></script>
 
-  <!-- CSS Stylesheet -->
+  <!-- CSS Stylesheet & FontAwesome Icons -->
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+
+  <!-- Interactive Ambient Background Glow (Apple visionOS Specular Engine) -->
+  <div id="ambientGlow"></div>
 
   <!-- Phase 2: Cinematic Pre-Loader Overlay -->
   <div class="cinematic-preloader" id="cinematicPreloader">
@@ -47,6 +55,11 @@
   <!-- Spring-Physics Custom Cursor Follower -->
   <div class="cursor-follower" id="cursorFollower">
     <img src="images/benyamin-hero.png" alt="Benyamin Cursor Hover Portrait">
+  </div>
+
+  <!-- Custom Tracking Drag Cursor Badge -->
+  <div class="drag-cursor-badge" id="dragCursorBadge" aria-hidden="true">
+    <span class="drag-cursor-label">&lt; DRAG &gt;</span>
   </div>
 
   <!-- Desktop Hover "View Photo" Indicator Pill -->
@@ -86,25 +99,50 @@
     })();
   </script>
 
-  <!-- Persistent Identity Marker (Fixed top-left with mix-blend-mode: difference; NO top navigation bar) -->
-  <a href="#" class="identity-marker magnetic-3d">BENYAMIN</a>
-
-  <!-- Floating Background Music Controller Widget -->
-  <button class="music-toggle-btn magnetic-3d" id="musicToggleBtn" aria-label="Toggle Background Music" title="Play / Pause Background Music">
-    <div class="music-bars" id="musicBars">
-      <span class="bar bar-1"></span>
-      <span class="bar bar-2"></span>
-      <span class="bar bar-3"></span>
-      <span class="bar bar-4"></span>
+  <!-- Dynamic Island Persistent Top Bar -->
+  <header class="dynamic-island-header" role="banner">
+    <div class="island-brand-wrap">
+      <a href="#" class="identity-marker magnetic-3d" aria-label="Benyamin Home">
+        <span class="brand-monogram">BN</span>
+        <span class="brand-title">BENYAMIN</span>
+      </a>
+      <div class="identity-status-pill">
+        <span class="status-dot"></span>
+        <span>Available Worldwide</span>
+      </div>
     </div>
-    <span class="music-label" id="musicLabel">MUSIC ON</span>
-  </button>
+
+    <div class="island-actions-wrap">
+      <a href="https://poetic-halva-9e9699.netlify.app" target="_blank" rel="noopener noreferrer" class="island-link-btn" title="View AI Automation &amp; Web Systems Portfolio">
+        <span>AI &amp; Dev Portfolio</span>
+        <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.68rem; margin-left: 3px;"></i>
+      </a>
+
+      <!-- Floating Background Music Controller Widget -->
+      <button class="music-toggle-btn magnetic-3d" id="musicToggleBtn" aria-label="Toggle Background Music" title="Play / Pause Background Music">
+        <div class="music-bars" id="musicBars">
+          <span class="bar bar-1"></span>
+          <span class="bar bar-2"></span>
+          <span class="bar bar-3"></span>
+          <span class="bar bar-4"></span>
+        </div>
+        <span class="music-label" id="musicLabel">MUSIC ON</span>
+      </button>
+    </div>
+  </header>
 
   <!-- Main Website Content -->
-  <div>
+  <main>
 
     <!-- Dynamic Hero Section with Split Line-Mask Reveals -->
     <section class="hero-section" id="hero">
+      
+      <!-- Overline Rating Pill -->
+      <div class="hero-rating-pill">
+        <span class="hero-stars">★★★★★</span>
+        <span>High Fashion · Editorial · Runway · Available Worldwide</span>
+      </div>
+
       <p class="hero-subhead">With a focus on editorial and runway fashion worldwide...</p>
 
       <!-- Mobile-Specific High-Impact Portrait Card (Visible on <=768px viewports) -->
@@ -117,14 +155,15 @@
           <span class="line-content">Hello! I'm <span class="hover-trigger-hero">BENYAMIN</span> /</span>
         </span>
         <span class="line-mask">
-          <span class="line-content">A model / defined by presence.</span>
+          <span class="line-content">A model / defined by <span class="serif-italic">presence</span>.</span>
         </span>
       </h1>
     </section>
 
-    <!-- Measurements & Bio Section -->
+    <!-- Measurements & Bio Section (Bento Spec Matrix) -->
     <section class="bio-stats-section" id="about">
       <div class="bio-text">
+        <div class="sec-tag">Biography &amp; Direction</div>
         <p>
           <span class="line-mask">
             <span class="line-content">Benyamin is an emerging male fashion model based</span>
@@ -142,13 +181,17 @@
       </div>
 
       <div class="stats-grid-wrapper">
+        <div class="stats-bento-header">
+          <span class="stats-bento-title">Model Specifications</span>
+          <span class="stats-bento-chip">2026 Polaroids</span>
+        </div>
         <div class="stats-grid-row">
           <span class="stats-label">Nationality</span>
           <span class="stats-val">Russian, Georgian, Filipino, Spanish</span>
         </div>
         <div class="stats-grid-row">
           <span class="stats-label">Height</span>
-          <span class="stats-val">183 CM / 6'0"</span>
+          <span class="stats-val accent-orange">183 CM / 6'0"</span>
         </div>
         <div class="stats-grid-row">
           <span class="stats-label">Waist</span>
@@ -174,28 +217,29 @@
     </section>
 
     <!-- Reversible Velocity Marquee Divider -->
-    <div class="marquee-container">
+    <div class="marquee-container" aria-hidden="true">
       <div class="marquee-content">
         <div class="marquee-item">
-          <span>Editorial</span> <span class="marquee-dot">•</span>
-          <span>Runway</span> <span class="marquee-dot">•</span>
-          <span>Commercial</span> <span class="marquee-dot">•</span>
-          <span>High Fashion</span> <span class="marquee-dot">•</span>
-          <span>Avant-Garde</span> <span class="marquee-dot">•</span>
+          <span>Editorial</span> <span class="marquee-dot">✦</span>
+          <span>Runway</span> <span class="marquee-dot">✦</span>
+          <span>Commercial</span> <span class="marquee-dot">✦</span>
+          <span>High Fashion</span> <span class="marquee-dot">✦</span>
+          <span>Avant-Garde</span> <span class="marquee-dot">✦</span>
         </div>
         <div class="marquee-item">
-          <span>Editorial</span> <span class="marquee-dot">•</span>
-          <span>Runway</span> <span class="marquee-dot">•</span>
-          <span>Commercial</span> <span class="marquee-dot">•</span>
-          <span>High Fashion</span> <span class="marquee-dot">•</span>
-          <span>Avant-Garde</span> <span class="marquee-dot">•</span>
+          <span>Editorial</span> <span class="marquee-dot">✦</span>
+          <span>Runway</span> <span class="marquee-dot">✦</span>
+          <span>Commercial</span> <span class="marquee-dot">✦</span>
+          <span>High Fashion</span> <span class="marquee-dot">✦</span>
+          <span>Avant-Garde</span> <span class="marquee-dot">✦</span>
         </div>
       </div>
     </div>
 
-    <!-- "What I Do Best" Section (Interactive Accordion + Clip-Path Image Reveal) -->
+    <!-- "What I Do Best" Section (Interactive Bento Accordion + Clip-Path Image Reveal) -->
     <section class="focus-section" id="focus">
-      <span class="section-label">What I Do Best</span>
+      <div class="sec-tag">Disciplines &amp; Craft</div>
+      <h2 class="section-h2">What I Do Best</h2>
 
       <div class="focus-accordion-container">
         <!-- Accordion List (Left Column) -->
@@ -204,7 +248,9 @@
           <div class="accordion-item active" data-img="img-1">
             <div class="accordion-header" role="tab" tabindex="0" aria-expanded="true" aria-controls="accordion-content-1" id="accordion-header-1">
               <div class="accordion-title-wrap"><span class="accordion-num">01</span>Editorial</div>
-              <i class="fa-solid fa-arrow-right accordion-arrow" aria-hidden="true"></i>
+              <div class="accordion-arrow-btn">
+                <i class="fa-solid fa-arrow-right accordion-arrow" aria-hidden="true"></i>
+              </div>
             </div>
             <div class="accordion-content" id="accordion-content-1" role="tabpanel" aria-labelledby="accordion-header-1">
               <div class="accordion-content-inner">
@@ -216,7 +262,9 @@
           <div class="accordion-item" data-img="img-2">
             <div class="accordion-header" role="tab" tabindex="0" aria-expanded="false" aria-controls="accordion-content-2" id="accordion-header-2">
               <div class="accordion-title-wrap"><span class="accordion-num">02</span>Runway</div>
-              <i class="fa-solid fa-arrow-right accordion-arrow" aria-hidden="true"></i>
+              <div class="accordion-arrow-btn">
+                <i class="fa-solid fa-arrow-right accordion-arrow" aria-hidden="true"></i>
+              </div>
             </div>
             <div class="accordion-content" id="accordion-content-2" role="tabpanel" aria-labelledby="accordion-header-2">
               <div class="accordion-content-inner">
@@ -228,7 +276,9 @@
           <div class="accordion-item" data-img="img-3">
             <div class="accordion-header" role="tab" tabindex="0" aria-expanded="false" aria-controls="accordion-content-3" id="accordion-header-3">
               <div class="accordion-title-wrap"><span class="accordion-num">03</span>Commercial</div>
-              <i class="fa-solid fa-arrow-right accordion-arrow" aria-hidden="true"></i>
+              <div class="accordion-arrow-btn">
+                <i class="fa-solid fa-arrow-right accordion-arrow" aria-hidden="true"></i>
+              </div>
             </div>
             <div class="accordion-content" id="accordion-content-3" role="tabpanel" aria-labelledby="accordion-header-3">
               <div class="accordion-content-inner">
@@ -240,7 +290,9 @@
           <div class="accordion-item" data-img="img-4">
             <div class="accordion-header" role="tab" tabindex="0" aria-expanded="false" aria-controls="accordion-content-4" id="accordion-header-4">
               <div class="accordion-title-wrap"><span class="accordion-num">04</span>Lookbook</div>
-              <i class="fa-solid fa-arrow-right accordion-arrow" aria-hidden="true"></i>
+              <div class="accordion-arrow-btn">
+                <i class="fa-solid fa-arrow-right accordion-arrow" aria-hidden="true"></i>
+              </div>
             </div>
             <div class="accordion-content" id="accordion-content-4" role="tabpanel" aria-labelledby="accordion-header-4">
               <div class="accordion-content-inner">
@@ -261,11 +313,17 @@
       </div>
     </section>
 
-    <!-- Portfolio Gallery (3D Coverflow Snap-Scrolling Carousel) -->
+    <!-- Portfolio Gallery (3D Coverflow Snap-Scrolling Carousel in Deep Obsidian Stage) -->
     <section class="works-section" id="works">
       <div class="works-header-row">
-        <h2 class="works-header">Works</h2>
-        <div class="slider-hint"><i class="fa-solid fa-arrows-left-right"></i> Click or Drag Cards to Center</div>
+        <div>
+          <div class="sec-tag dark">Lookbook &amp; Selects</div>
+          <h2 class="works-header">Works &amp; <span class="serif-italic">Editorials</span></h2>
+        </div>
+        <div class="slider-hint">
+          <i class="fa-solid fa-arrows-left-right" style="color: #FF6B00; margin-right: 4px;"></i>
+          <span>Click or Drag Cards to Center</span>
+        </div>
       </div>
 
       <div class="coverflow-wrapper" id="coverflowWrapper">
@@ -316,30 +374,65 @@
 
     <!-- Immersive Footer Section & Final CTA -->
     <footer class="footer-section" id="contact">
-      <h2 class="footer-cta-headline">Let's work<br>together</h2>
+      <h2 class="footer-cta-headline">Let's work<br><span class="serif-italic">together</span></h2>
 
       <div class="footer-grid">
         <div class="footer-col-left">
+          <div class="sec-tag">Social Channels</div>
           <ul class="social-list">
-            <li><a href="https://www.instagram.com/ftyuhan/" target="_blank" class="magnetic-3d">Instagram</a></li>
-            <li><a href="https://www.facebook.com/benyamin.namtalashvili/" target="_blank" class="magnetic-3d">Facebook</a></li>
+            <li>
+              <a href="https://www.instagram.com/ftyuhan/" target="_blank" rel="noopener noreferrer" class="social-glass-pill magnetic-3d">
+                <i class="fa-brands fa-instagram"></i>
+                <span>Instagram</span>
+                <i class="fa-solid fa-arrow-up-right-from-square social-arrow"></i>
+              </a>
+            </li>
+            <li>
+              <a href="https://www.facebook.com/benyamin.namtalashvili/" target="_blank" rel="noopener noreferrer" class="social-glass-pill magnetic-3d">
+                <i class="fa-brands fa-facebook"></i>
+                <span>Facebook</span>
+                <i class="fa-solid fa-arrow-up-right-from-square social-arrow"></i>
+              </a>
+            </li>
+            <li>
+              <a href="https://poetic-halva-9e9699.netlify.app" target="_blank" rel="noopener noreferrer" class="social-glass-pill magnetic-3d">
+                <i class="fa-solid fa-laptop-code"></i>
+                <span>Tech &amp; AI Portfolio</span>
+                <i class="fa-solid fa-arrow-up-right-from-square social-arrow"></i>
+              </a>
+            </li>
           </ul>
         </div>
 
         <div class="footer-col-right">
+          <div class="sec-tag">Direct Inquiries</div>
           <p class="footer-paragraph">I'm currently available for new editorial, runway, and global commercial bookings.</p>
-          <a href="mailto:benyaminnamtalashvili726@gmail.com" class="footer-email-link magnetic-3d">benyaminnamtalashvili726@gmail.com</a>
+          <a href="mailto:benyaminnamtalashvili726@gmail.com" class="footer-email-link magnetic-3d">
+            <span>benyaminnamtalashvili726@gmail.com</span>
+            <i class="fa-solid fa-arrow-right email-hover-arrow"></i>
+          </a>
         </div>
       </div>
 
-      <div class="footer-bottom-bar">
-        <div>Based in Philippines / Available Worldwide</div>
-        <div>&copy; 2026 BENYAMIN STUDIO. All Rights Reserved.</div>
-        <div><a href="#" id="backToTop" class="magnetic-3d">Back to top ↑</a></div>
+      <!-- Bottom Technical Colophon Bar (Matching Test Portfolio) -->
+      <div class="footer-technical-bar">
+        <div class="tech-bar-left">
+          <span class="tech-sq-dot">■</span>
+          <span class="tech-file-name">benyamin-model.fig</span>
+        </div>
+        <div class="tech-bar-center">
+          <span class="tech-live-dot">●</span>
+          <span id="footerCursorCount">2 cursors online</span>
+          <span class="tech-divider">·</span>
+          <span id="footerClockTime">11:15 PHT</span>
+        </div>
+        <div class="tech-bar-right">
+          <span>&copy; 2026 BENYAMIN STUDIO · engineered by Benyamin Namtalashvili</span>
+        </div>
       </div>
     </footer>
 
-  </div>
+  </main>
 
   <!-- High-Performance Glassmorphic Lightbox Overlay -->
   <div class="lightbox-overlay" id="lightboxOverlay">
